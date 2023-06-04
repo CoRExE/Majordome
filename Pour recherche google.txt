@@ -1,0 +1,8 @@
+Search
+https//:www.google.fr/search?q= letrucqu'on veut
+Image			  ↓↓↓↓↓↓
+https://www.google.fr/search?q= idem &source=Inms&tbm=isch
+Vidéo
+https://www.google.fr/search?q= idem &source=Inms&tbm=vid
+
+espace entre les recherches = %20 la pluie incessante -> la%20pluie%20incessante
