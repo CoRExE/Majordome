@@ -1,7 +1,7 @@
 from discord.ext import commands
 import random
-from BotExtentions.addPack import jeton
-from BotExtentions.Personal_Modals import *
+from BotExtensions.addPack import jeton
+from BotExtensions.Personal_Modals import *
 
 intents = discord.Intents.default()
 default_intents = discord.Intents.default()
@@ -181,6 +181,6 @@ async def groult(ctx):
 async def send_modal(ctx):
     await ctx.send(view=MyView())
 
-bot.load_extension("ModerateExtend")
+bot.load_extension("BotExtensions.ModerateExtend")
 
 bot.run(jeton)

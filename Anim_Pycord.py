@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from io import BytesIO
 import datetime
-from BotExtentions.addPack import jeton
+from BotExtensions.addPack import jeton
 
 # Importer la bibliothèque PyCord
 import discord
