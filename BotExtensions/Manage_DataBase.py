@@ -1,3 +1,8 @@
+#  Copyright (c) 2023.
+#  Ceci est une propriété de CoRE.ExE, vous êtes autorisés à l'intégration de ce produit.
+#  Il est formellement interdit de monétiser ce contenu.
+#  Toute infraction aux règles précédemment citée pourra engager des poursuites.
+
 import os
 import sqlite3 as sql
 from os.path import exists
@@ -21,7 +26,7 @@ class ManageDB:
     def create_schema(self, schema: str):
         """
         Prends en paramètre un nom de schema et vérifie s'il existe
-        Enregistre ça création dans la liste des schemas et en cle dans
+        Enregistre ça création dans la liste des schemas, et en cle dans
         le dictionnaire tables et lui attribut une liste en valeur
         :param schema:
         :return:

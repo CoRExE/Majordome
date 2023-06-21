@@ -44,47 +44,8 @@ async def secret(ctx, *, message):
 
 
 @bot.command()
-async def randomize(ctx, *, msg):
-    msg = msg.split('-')
-    await ctx.send(random.choice(msg))
-
-
-@bot.command()
-async def roll(ctx, *, msg):
-    msg = int(msg)
-    if random.randint(0, 99) == 0:
-        await ctx.reply('https://youtu.be/dQw4w9WgXcQ')
-    else:
-        await ctx.reply(random.randint(0, msg), mention_author=False)
-
-
-@bot.command()
-async def pile_face(ctx):
-    await ctx.reply(random.choice(['Pile', 'Face']), mention_author=False)
-
-
-@bot.command()
-async def pfc(ctx):
-    """
-    TODO With Button
-    :param ctx:
-    :return:
-    """
-
-
-# any reaction
-@pfc.error
-async def on_pfc_error(ctx, error):
-    if isinstance(error, AssertionError):
-        await ctx.send("You can only put {p,f,c}")
-
-
-@bot.command()
-async def calc(ctx, *, msg):
-    num = []
-    syb = []
-    for pee in msg:
-        pass
+async def member_activity(ctx, member: discord.Member):
+    pass
 
 
 def webcheck(abe):
@@ -125,6 +86,7 @@ async def search_v(ctx, *, msg):
 @bot.command()
 async def translate(ctx, lang1, lang2, *, msg):
     await ctx.send(f'https://translate.google.com/?sl={lang1}&tl={lang2}&text={webcheck(msg)}&op=translate')
+
 
 # emoji custom <:emoji_name:emoji_id>
 
@@ -181,6 +143,15 @@ async def groult(ctx):
 async def send_modal(ctx):
     await ctx.send(view=MyView())
 
+
 bot.load_extension("BotExtensions.ModerateExtend")
+bot.load_extension("BotExtensions.DiscordMinigames")
+
+
+async def reload_extension(extensions: str | list[str]):
+    if type(extensions) is list:
+        for extension in extensions:
+            bot.reload_extension(extension)
+
 
 bot.run(jeton)
