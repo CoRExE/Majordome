@@ -96,49 +96,6 @@ async def test(ctx):
     await ctx.send(str(ctx.author) + ' <:Tim_Coins:944004800369033256>')
 
 
-# TROLL COMMAND
-
-
-@bot.command()
-async def yes(ctx):
-    await ctx.send('https://tenor.com/view/jojo-anime-yes-yes-yes-yeah-its-a-yes-gif-17161748')
-    await ctx.message.delete()
-
-
-@bot.command()
-async def noice(ctx):
-    await ctx.send('https://tenor.com/view/noice-nice-click-gif-8843762')
-    await ctx.message.delete()
-
-
-@bot.command()
-async def rick(ctx):
-    await ctx.send('https://tenor.com/view/rick-roll-rick-ashley-never-gonna-give-you-up-gif-22113173')
-    await ctx.message.delete()
-
-
-@bot.command()
-async def Ooh(ctx):
-    await ctx.send('https://tenor.com/view/%D1%81%D1%80%D1%81%D0%BC-%D0%B1%D0%B5%D0%BB%D0%B0-%D0%B8%D0%BD%D0%B5%D0%BD'
-                   '%D0%B0%D0%B4%D0%B0-%D0%B8%D0%B7%D0%BD%D0%B5%D0%BD%D0%B0%D0%B4%D0%B0-%D1%81%D0%BC%D1%8F%D1%85-gif'
-                   '-24523449')
-    await ctx.message.delete()
-
-
-@bot.command()
-async def yeet(ctx):
-    await ctx.send("https://tenor.com/view/whats-a-yeet-playing-gif-15038419")
-    await ctx.message.delete()
-
-
-@bot.command()
-async def groult(ctx):
-    await ctx.send(
-        'https://cdn.vox-cdn.com/thumbor/yzPdGsXFWCHbNMlDWHhPROUzVeI=/1400x1400/filters:format('
-        'jpeg)/cdn.vox-cdn.com/uploads/chorus_asset/file/8378039/baby-groot-guardians.0.jpg')
-    await ctx.message.delete()
-
-
 @bot.command()
 async def send_modal(ctx):
     await ctx.send(view=MyView())

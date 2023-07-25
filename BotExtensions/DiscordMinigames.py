@@ -36,6 +36,11 @@ class DiscordMinigame(commands.Cog):
     async def pile_face(self, ctx):
         await ctx.reply(random.choice(['Pile', 'Face']), mention_author=False)
 
+    @commands.slash_command()
+    async def memory(self, ctx):
+        view = Memory()
+        await ctx.respond("Sélectionnez 2 Buttons :", view=view)
+
 
 # # # Class View # # #
 
@@ -66,3 +71,59 @@ class PFCView(View):
             await interaction.response.send_message("Vous avez choisi Ciseaux.")
 
         await self.message.edit(view=None)
+
+
+class Memory(View):
+    # TODO Correction of revel emoji button
+    def __init__(self, timeout: int | None = None):
+        super().__init__(timeout=timeout)
+        self.emojis = ['🌼', '🌺', '🌸', '🌻', '🌹', '🌷']
+        self.buttons = []
+        self.couple = []
+
+        compteur = 0
+        emoji_copy = self.emojis.copy()
+        for x in range(len(self.emojis)):
+            emoji = random.choice(emoji_copy)
+            for y in range(2):
+                compteur += 1
+                but = Button(style=discord.ButtonStyle.primary, label="?", custom_id=emoji+str(compteur))
+                self.buttons.append(but)
+                self.add_item(but)
+            emoji_copy.remove(emoji)
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        await self.button_react(interaction)
+        return True
+
+    async def on_timeout(self) -> None:
+        await self.message.edit(view=None)
+
+    async def button_react(self, interaction: discord.Interaction):
+        emoji = interaction.custom_id
+        button = self.get_button_by_id(emoji)
+        if len(self.couple) == 1:
+            self.couple.append(emoji)
+            if self.couple[0] == self.couple[1]:
+                await interaction.response.send_message(f"Vous avez trouvé une paire avec l'emoji : {emoji}")
+            else:
+                await interaction.response.send_message(f"Mauvaise paire !")
+                await self.hide_buttons([self.couple[0], self.couple[1]])
+            self.couple = []
+        else:
+            self.couple = [emoji]
+        await interaction.message.edit()
+
+    async def hide_buttons(self, emojis):
+        for emoji in emojis:
+            button = self.get_button_by_id(emoji)
+            await self.update_button_label(button, "?")
+
+    async def update_button_label(self, button, emoji):
+        button.label = emoji
+        button.disabled = True
+
+    def get_button_by_id(self, emoji):
+        for button in self.buttons:
+            if button.custom_id == emoji:
+                return button

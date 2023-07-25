@@ -17,6 +17,5 @@ class MyModal(discord.ui.Modal):
 
 class MyView(discord.ui.View):
     @discord.ui.button(label="Send Modal")
-    async def button_callback(self, button, interaction):
+    async def button_callback(self, interaction):
         await interaction.response.send_modal(MyModal(title="Modal via Button"))
-

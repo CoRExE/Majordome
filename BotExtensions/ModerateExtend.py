@@ -10,9 +10,29 @@ class Moderation(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @commands.slash_command()
+    async def avatar(self, ctx, member: discord.Member | None = None):
+        """
+        Montre votre avatar ou celui d'un membre cité
+        :param member:
+        :param ctx:
+        :return None:
+        """
+        if member is None:
+            await ctx.respond(ctx.author.avatar)
+        else:
+            await ctx.respond(member.avatar)
+
+    @commands.slash_command()
     @commands.has_permissions(manage_messages=True)
     async def cls(self, ctx, num: int):
+        """
+        Supprime le nombre de messages indiqué
+        :param ctx:
+        :param num:
+        :return:
+        """
+        await ctx.respond("Suppression lancée !")
         msgs = await ctx.channel.history(limit=num + 1).flatten()
         for msg in msgs:
             await msg.delete()
