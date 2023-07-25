@@ -32,20 +32,9 @@ async def echo(ctx, *, message):
 
 
 @bot.command()
-async def MPsomeone(ctx, mention: discord.Member):
-    await mention.send('MP message from `!MPsomeone` command by : ' + str(ctx.author))
-    print(str(ctx.author) + " Used the MPsomeone command on : " + str(mention))
-
-
-@bot.command()
 async def secret(ctx, *, message):
     print(ctx.author)
     await ctx.author.send(message)
-
-
-@bot.command()
-async def member_activity(ctx, member: discord.Member):
-    pass
 
 
 def webcheck(abe):
@@ -63,7 +52,7 @@ async def game_421(ctx):
     pound = []
     for i in range(3):
         pound.append(random.randint(1, 6))
-    await ctx.send(pound)
+    await ctx.send(pound.sort(reverse=True))
 
 
 # Internet
@@ -98,7 +87,7 @@ async def test(ctx):
 
 @bot.command()
 async def send_modal(ctx):
-    await ctx.send(view=MyView())
+    await ctx.send(view=ModalView())
 
 
 bot.load_extension("BotExtensions.ModerateExtend")

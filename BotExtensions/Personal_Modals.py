@@ -1,7 +1,7 @@
 import discord
 
 
-class MyModal(discord.ui.Modal):
+class TestModal(discord.ui.Modal):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
@@ -15,7 +15,7 @@ class MyModal(discord.ui.Modal):
         await interaction.response.send_message(embeds=[embed])
 
 
-class MyView(discord.ui.View):
+class ModalView(discord.ui.View):
     @discord.ui.button(label="Send Modal")
     async def button_callback(self, interaction):
-        await interaction.response.send_modal(MyModal(title="Modal via Button"))
+        await interaction.response.send_modal(TestModal(title="Modal via Button"))
