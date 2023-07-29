@@ -32,8 +32,8 @@ class Moderation(commands.Cog):
         :param num:
         :return:
         """
-        await ctx.respond("Suppression lancée !")
-        msgs = await ctx.channel.history(limit=num + 1).flatten()
+        await ctx.respond("Suppression lancée !", delete_after=5, ephemeral=True)
+        msgs = await ctx.channel.history(limit=num).flatten()
         for msg in msgs:
             await msg.delete()
 
@@ -49,8 +49,17 @@ class Moderation(commands.Cog):
     @commands.slash_command()
     @commands.has_permissions(manage_messages=True)
     async def users_profile(self, ctx, member: discord.Member):
-        # TODO : Create Embed and send it
-        await ctx.respond("En Cours de Development ")
+        # Create an Embed to display the user's profile
+        embed = discord.Embed(title=f"Profile for {member.display_name}", color=0x00ff00)
+        embed.add_field(name="Username", value=member.name, inline=True)
+        embed.add_field(name="ID", value=member.id, inline=True)
+        embed.add_field(name="Nickname", value=member.nick, inline=True)
+        embed.add_field(name="Created At", value=member.created_at.strftime('%Y-%m-%d %H:%M:%S'), inline=True)
+        embed.add_field(name="Joined Server At", value=member.joined_at.strftime('%Y-%m-%d %H:%M:%S'), inline=True)
+        embed.set_thumbnail(url=member.avatar)
+
+        # Send the Embed as a response
+        await ctx.respond(embed=embed)
 
     @commands.slash_command()
     async def joined(self, ctx, *, member: discord.Member):

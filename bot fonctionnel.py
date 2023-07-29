@@ -1,7 +1,9 @@
+import discord
 from discord.ext import commands
 import random
 from BotExtensions.addPack import jeton
 from BotExtensions.Personal_Modals import *
+from os.path import exists
 
 intents = discord.Intents.default()
 default_intents = discord.Intents.default()
@@ -11,6 +13,8 @@ intents.message_content = True
 
 client = discord.Client(intents=default_intents)
 bot = commands.Bot(command_prefix='!', intents=intents)
+
+bot_extensions = []
 
 
 @bot.event
@@ -90,14 +94,51 @@ async def send_modal(ctx):
     await ctx.send(view=ModalView())
 
 
-bot.load_extension("BotExtensions.ModerateExtend")
-bot.load_extension("BotExtensions.DiscordMinigames")
+@bot.command()
+@commands.has_permissions(administrator=True)
+async def load_extension(ctx, extensions: str):
+    if "," in extensions:
+        extensions = extensions.split(",")
+        for extension in extensions:
+            if exists("BotExtensions/" + extension):
+                bot.load_extension("BotExtensions/" + extension)
+                await ctx.send(f"Extension : {extension} loaded !")
+            else:
+                await ctx.send(f"L'extension {extension} n'existe pas", ephemeral=True)
+    elif exists("BotExtensions/" + extensions):
+        bot.load_extension("BotExtensions/" + extensions)
+        await ctx.send(f"Extension : {extensions} loaded")
+    else:
+        await ctx.send(f"L'extension {extensions} n'existe pas", ephemeral=True)
 
 
-async def reload_extension(extensions: str | list[str]):
+@bot.command()
+@commands.has_permissions(administrator=True)
+async def reload_extension(ctx, extensions: str | list[str] | None = None):
+    if extensions is None:
+        for extension in bot.extensions.keys():
+            bot.reload_extension(extension)
+            for ext in bot.extensions.keys():
+                await ctx.send(f"Extensions : {ext}", delete_after=15)
+
+
+@bot.command()
+@commands.has_permissions(administrator=True)
+async def unload_extension(ctx, extensions: str | list[str]):
     if type(extensions) is list:
         for extension in extensions:
-            bot.reload_extension(extension)
+            if extension in bot.extensions.keys():
+                bot.unload_extension(extension)
+                await ctx.send(f"Extension {extension} unload", ephemeral=True)
+            else:
+                await ctx.send(f"Extension {extension} isn't found in actives extensions")
+    elif type(extensions) is str and extensions in bot.extensions.keys():
+        bot.unload_extension(extensions)
+        await ctx.send(f"{extensions} unload !", ephemeral=True)
 
+
+bot.load_extension("BotExtensions.ModerateExtend")
+bot.load_extension("BotExtensions.DiscordMinigames")
+bot.load_extension("BotExtensions.SoulLink")
 
 bot.run(jeton)
