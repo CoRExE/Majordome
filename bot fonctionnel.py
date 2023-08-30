@@ -1,4 +1,3 @@
-import discord
 from discord.ext import commands
 import random
 from BotExtensions.addPack import jeton
