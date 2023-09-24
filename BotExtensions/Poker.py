@@ -24,9 +24,21 @@ def get_ID_role_by_name(ctx: commands.Context, role_name):
 class Poker(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.roles = []
+        self.players = []
+        self.table = {}
+
+    def get_manager_roles(self):
+        return self.roles
 
     @commands.slash_command()
     @commands.has_permissions(administrator=True)
+    async def set_authorized_role(self, ctx, *role: discord.Role):
+        for r in role:
+            self.roles.append(r)
+
+    @commands.slash_command()
+    @commands.has_any_role(*get_manager_roles())
     async def set_env_table(self, ctx):
         guild = ctx.guild
 
@@ -38,4 +50,14 @@ class Poker(commands.Cog):
         await ctx.respond("Generation de l'environnement...")
         await guild.create_text_channel(name="tables", overwrites=overwrites)
 
-    # TODO : Ajouter les commandes de CreateTable, DeleteTable, JoinTable, LeaveTable
+    # TODO : Ajouter les commandes de unregister
+
+    @commands.slash_command()
+    @commands.has_permissions(administrator=True)
+    async def register_button(self, ctx):
+        @discord.ui.button(label="Register", style=discord.ButtonStyle.green)
+        async def register_button_callback(interaction: discord.Interaction):
+            interaction.response.send_message("Register", ephemeral=True)
+            self.players.append(interaction.user)
+
+    
