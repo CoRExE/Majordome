@@ -5,6 +5,7 @@
 
 import discord
 from discord.ext import commands
+from random import choice as ch
 
 
 def setup(bot):
@@ -26,20 +27,24 @@ class Poker(commands.Cog):
         self.bot = bot
         self.roles = []
         self.players = []
-        self.table = {}
+        self.table = {"Table 1": []}
 
-    def get_manager_roles(self):
-        return self.roles
+    def check_roles(self, ctx):
+        check = False
+        for role in ctx.author.roles:
+            if role in self.roles:
+                check = True
+        if not check:
+            raise Exception("Vous n'avez pas les droits")
 
     @commands.slash_command()
-    @commands.has_permissions(administrator=True)
-    async def set_authorized_role(self, ctx, *role: discord.Role):
-        for r in role:
-            self.roles.append(r)
+    async def set_authorized_role(self, ctx):
+        ...  # TODO Add Select to Choice Role
 
     @commands.slash_command()
-    @commands.has_any_role(*get_manager_roles())
     async def set_env_table(self, ctx):
+        self.check_roles(ctx)
+
         guild = ctx.guild
 
         overwrites = {
@@ -50,14 +55,55 @@ class Poker(commands.Cog):
         await ctx.respond("Generation de l'environnement...")
         await guild.create_text_channel(name="tables", overwrites=overwrites)
 
+    @set_env_table.error
+    async def set_env_table_error(self, ctx, error):
+        if error is Exception:
+            await ctx.respond("Vous n'avez pas les droits", ephemeral=True)
+
     # TODO : Ajouter les commandes de unregister
 
     @commands.slash_command()
-    @commands.has_permissions(administrator=True)
     async def register_button(self, ctx):
-        @discord.ui.button(label="Register", style=discord.ButtonStyle.green)
-        async def register_button_callback(interaction: discord.Interaction):
-            interaction.response.send_message("Register", ephemeral=True)
-            self.players.append(interaction.user)
+        # self.check_roles(ctx)
 
-    
+        async def button_callback(interaction: discord.Interaction):
+            if interaction.user not in self.players:
+                self.players.append(interaction.user)
+                await interaction.response.send_message("You have been registered", ephemeral=True, delete_after=5)
+            else:
+                await interaction.response.send_message("You are already registered", ephemeral=True, delete_after=5)
+
+        button = discord.ui.Button(label="Register", style=discord.ButtonStyle.green)
+        button.callback = button_callback
+
+        view = discord.ui.View()
+        view.add_item(button)
+
+        await ctx.respond("Ajoutez vous aux participants", view=view)
+
+    @commands.slash_command()
+    async def draw_tables(self, ctx, max_players: int = 5):
+        # self.check_roles(ctx)
+        list_players = self.players.copy()
+        while len(list_players) > 0:
+            pick_up = ch(list_players)
+            if len(self.table[f"Table {len(self.table)}"]) == max_players:
+                self.table[f"Table {len(self.table) + 1}"] = []
+            self.table[f"Table {len(self.table)}"].append(pick_up)
+            list_players.remove(pick_up)
+
+        embed = discord.Embed(title="Tables",
+                              description="Distribution des tables",
+                              color=0x00ff00)
+
+        for table, members in self.table.items():
+            member_names = [member.display_name for member in members]
+            embed.add_field(name=table, value='\n'.join(member_names), inline=True)
+
+        await ctx.respond(embed=embed)
+
+    @commands.slash_command()
+    async def delete_tables(self, ctx):
+        # self.check_roles(ctx)
+        self.table.clear()
+        await ctx.respond("Tables supprimées", ephemeral=True)
