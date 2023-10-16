@@ -5,16 +5,34 @@
 
 import discord
 from discord.ext import commands
+from discord.ui import Button, View
 
 
 def setup(bot):
     bot.add_cog(SoulLink(bot))
 
 
+class Pokemon:
+    def __init__(self, lieu: str, surnom: str, specie: str | None = None):
+        self.specie: str = specie
+        self.surnom: str = surnom
+        self.lieu: str = lieu
+
+
+class Dresseur:
+    def __init__(self, member: discord.Member, link_trainer: discord.Member):
+        self.id: discord.Member = member
+        self.squad: list[Pokemon] = []
+        self.linked_trainer: discord.Member = link_trainer
+
+    def __add__(self, other: Pokemon):
+        self.squad.append(other)
+
+
 class SoulLink(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.link_players: list[tuple[discord.Member, discord.Member]] = []
+        self.link_players: list[tuple[discord.Member, ...]] = []
         self.players: dict[str] = {}
 
     @commands.slash_command()
@@ -34,13 +52,16 @@ class SoulLink(commands.Cog):
         await ctx.respond(embed=embed_rules)
 
     @commands.slash_command()
-    async def soul_link(self, ctx):
+    async def soul_link(self, ctx, dresseur: discord.Member | None = None):
         """
         Génère une association entre deux membres
+        :param dresseur:
         :param ctx:
         :return:
         """
         soul1 = ctx.author
+
+        join_button = Button(style=discord.ButtonStyle.blurple, label="Link !", custom_id="accept")
 
         link = discord.ui.button(label="Link", emoji=":knot:")
 
