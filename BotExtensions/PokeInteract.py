@@ -15,7 +15,8 @@ class PokeInteract:
         return requests.get(f"{self.url}pokemon?limit={limit}").json()
 
     def all_species(self):
-        limit = None
+        limit = requests.get(f"{self.url}pokemon-species").json()['count']
+        return requests.get(f"{self.url}pokemon-species?limit={limit}").json()
 
     def get_poke(self, name):
         return requests.get(f"{self.url}pokemon/{name}").json()
