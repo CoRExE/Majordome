@@ -5,6 +5,8 @@
 
 import discord
 from discord.ext import commands
+from discord.ext.pages import Paginator
+
 from BotExtensions.PokeInteract import *
 
 
@@ -25,3 +27,21 @@ class PokeExtension(commands.Cog):
         for poke_type in poke['types']:
             embed.add_field(name=poke_type['type']['name'], value=poke_type['type']['name'], inline=True)
         await ctx.respond(embed=embed)
+
+    @commands.slash_command()
+    async def pokemon(self, ctx):
+        # TODO Add paginator
+        basic_info_page = "Informations basiques du Pokemon"
+        stats_page = "Statistiques du Pokemon"
+        talent_page = "Talent du Pokemon"
+        abilities_page = "Capacités du Pokemon"
+
+        pages = [basic_info_page, stats_page, talent_page, abilities_page]
+        paginator = Paginator(pages)
+
+        @discord.ui.button(label="Page suivante", style=discord.ButtonStyle.green)
+        async def button_callback(interaction: discord.Interaction):
+            await interaction.response.send_message("Page suivante", ephemeral=True)
+            await paginator.goto_page((paginator.current_page + 1)//len(pages))
+
+        await ctx.respond(paginator.pages[0])
