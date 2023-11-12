@@ -14,6 +14,7 @@ def setup(bot):
 class Moderation(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.variable_temp: dict = {}
 
     @commands.slash_command()
     async def avatar(self, ctx, member: discord.Member | None = None):
@@ -71,17 +72,19 @@ class Moderation(commands.Cog):
         await ctx.respond('{0} joined on {0.joined_at}'.format(member))
 
     @commands.slash_command()
-    async def create_poll_fast(self, ctx, question: str, anonymous: bool = False):
+    async def create_poll_fast(self, ctx, question: str, anonymous: bool = False, duration: int = 120):
+        self.variable_temp['participants'] = []
         buttons = [
             discord.ui.Button(
                 style=discord.ButtonStyle.green,
-                label="Yes"),
+                label="Yes",
+                custom_id="yes"),
             discord.ui.Button(
                 style=discord.ButtonStyle.red,
                 label="No")
         ]
 
-        view = discord.ui.View()
+        view = discord.ui.View(timeout=duration, disable_on_timeout=True)
 
         embed = discord.Embed(
             title="Question",
@@ -91,8 +94,10 @@ class Moderation(commands.Cog):
         if anonymous:
             embed.add_field(
                 name="Participants",
-                value=""
+                value="0"
             )
+            self.variable_temp['yes'] = 0
+            self.variable_temp['no'] = 0
         else:
             embed.add_field(
                 name="Yes",
@@ -106,13 +111,60 @@ class Moderation(commands.Cog):
                 inline=True
             )
 
-        def buttons_callback(interaction: discord.Interaction):
-            interaction.response.edit_message(interaction)
-            print(interaction)
+        if anonymous:
+            async def buttons_callback(interaction: discord.Interaction):
+                if interaction.user.name in self.variable_temp['participants']:
+                    await interaction.response.send_message("You already voted!", ephemeral=True)
+                else:
+                    embed.fields[0].value = int(embed.fields[0].value) + 1
+                    self.variable_temp[interaction.custom_id] += 1
+                    await interaction.response.edit_message(embed=embed, view=view)
+                    self.variable_temp['participants'].append(interaction.user.name)
+        else:
+            async def buttons_callback(interaction: discord.Interaction):
+                if interaction.user.name in self.variable_temp['participants']:
+                    await interaction.response.send_message("You already voted!", ephemeral=True)
+                elif interaction.custom_id == "yes":
+                    embed.fields[0].value += interaction.user.name + "\n"
+                    await interaction.response.edit_message(embed=embed, view=view)
+                    self.variable_temp['participants'].append(interaction.user.name)
+                else:
+                    embed.fields[1].value += interaction.user.name + "\n"
+                    await interaction.response.edit_message(embed=embed, view=view)
+                    self.variable_temp['participants'].append(interaction.user.name)
+
+        async def on_timeout():
+            if self.variable_temp['participants'].__len__() == 0:
+                embed.clear_fields()
+                embed.add_field(
+                    name="Résultat",
+                    value="Aucun Vote"
+                )
+            elif int(embed.fields[0].value) > int(embed.fields[1].value):
+                embed.clear_fields()
+                embed.add_field(
+                    name="Résultat",
+                    value="Yes"
+                )
+            elif int(embed.fields[0].value) < int(embed.fields[1].value):
+                embed.clear_fields()
+                embed.add_field(
+                    name="Résultat",
+                    value="No"
+                )
+            else:
+                embed.clear_fields()
+                embed.add_field(
+                    name="Résultat",
+                    value="Tie"
+                )
+            await message.edit_original_response(embed=embed, view=None)
+            self.variable_temp.clear()
+
+        view.on_timeout = on_timeout
 
         for button in buttons:
             button.callback = buttons_callback
-            # Error in callback attribute
             view.add_item(button)
 
-        await ctx.respond(embed=embed, view=view)
+        message = await ctx.respond(embed=embed, view=view)
