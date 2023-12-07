@@ -9,7 +9,7 @@ from discord.ext import commands
 
 
 def setup(bot):
-    bot.add_cog()
+    bot.add_cog(Troll(bot))
 
 
 class Troll(commands.Cog):

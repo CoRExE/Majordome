@@ -141,5 +141,6 @@ bot.load_extension("BotExtensions.ModerateExtend")
 bot.load_extension("BotExtensions.DiscordMinigames")
 bot.load_extension("BotExtensions.SoulLink")
 bot.load_extension("BotExtensions.PokeExtension")
+bot.load_extension("BotExtensions.troll")
 
 bot.run(jeton)
