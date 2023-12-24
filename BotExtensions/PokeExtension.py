@@ -25,7 +25,7 @@ class PokeExtension(commands.Cog):
         embed = discord.Embed(title=self.interact.get_species(name)['names'][4]['name'], color=0x00ff00)
         embed.set_thumbnail(url=poke['sprites']['front_default'])
         for poke_type in PokeInteract.get_poke_types(poke):
-            embed.add_field(name=poke_type['type']['name'], value=poke_type['type']['name'], inline=True)
+            embed.add_field(name=poke_type, value=poke_type, inline=True)
         await ctx.respond(embed=embed)
 
     @commands.slash_command()
