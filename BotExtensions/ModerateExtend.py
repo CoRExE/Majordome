@@ -2,6 +2,7 @@
 #  Ceci est une propriété de CoRE.ExE, vous êtes autorisés à l'intégration de ce produit.
 #  Il est formellement interdit de monétiser ce contenu.
 #  Toute infraction aux règles précédemment citée pourra engager des poursuites.
+from asyncio import sleep
 
 import discord
 from discord.ext import commands
@@ -31,17 +32,23 @@ class Moderation(commands.Cog):
 
     @commands.slash_command()
     @commands.has_permissions(manage_messages=True)
-    async def cls(self, ctx, num: int):
+    async def cls(self, ctx, num: int = 10, purge: bool = False):
         """
         Supprime le nombre de messages indiqué
+        :param purge:
         :param ctx:
         :param num:
         :return:
         """
-        await ctx.respond("Suppression lancée !", delete_after=5, ephemeral=True)
-        msgs = await ctx.channel.history(limit=num).flatten()
-        for msg in msgs:
-            await msg.delete()
+        if purge:
+            await ctx.respond("Suppression Complete Lancée !", delete_after=3, ephemeral=True)
+            await sleep(5)
+            await ctx.channel.purge()
+        else:
+            await ctx.respond("Suppression lancée !", delete_after=5, ephemeral=True)
+            msgs = await ctx.channel.history(limit=num).flatten()
+            for msg in msgs:
+                await msg.delete()
 
     @commands.slash_command()
     async def rules(self, ctx):
@@ -134,6 +141,7 @@ class Moderation(commands.Cog):
                     self.variable_temp['participants'].append(interaction.user.name)
 
         async def on_timeout():
+            # int in test are broken
             if self.variable_temp['participants'].__len__() == 0:
                 embed.clear_fields()
                 embed.add_field(

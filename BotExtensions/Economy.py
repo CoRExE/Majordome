@@ -1,7 +1,10 @@
 import discord
 from discord.ext import commands
+from Manage_DataBase import *
 # from discord.ui import Button, Select, View
 
+
+data_management = ManageDB("Data")
 
 class Game(commands.Cog):
     def __init__(self, bot):
@@ -14,14 +17,6 @@ class Game(commands.Cog):
         self.allItems = []
         # Every Ban Item
         self.banItem = []
-
-    @commands.command()
-    async def stats(self, ctx):
-        stat = ''
-        stat += f'{ctx.author.name}, votre puissance disponible est de : {self.power}, ' \
-                f'vos données sont de : {self.data}/100 <:Data:943886193676939345> ' \
-                f'et votre Trésorerie est de {self.money} <:TimCoins:944398852910358628>'
-        await ctx.send(stat)
 
 
 class Player:
