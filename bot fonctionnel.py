@@ -139,7 +139,8 @@ async def unload_extension(ctx, extensions: str | list[str]):
 
 bot.load_extension("BotExtensions.ModerateExtend")
 bot.load_extension("BotExtensions.DiscordMinigames")
-bot.load_extension("BotExtensions.SoulLink")
+# bot.load_extension("BotExtensions.SoulLink")
 bot.load_extension("BotExtensions.PokeExtension")
+bot.load_extension("BotExtensions.Economy")
 
 bot.run(jeton)

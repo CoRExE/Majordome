@@ -1,10 +1,17 @@
 import discord
 from discord.ext import commands
-from Manage_DataBase import *
+from BotExtensions.Manage_DataBase import *
+from asyncio import sleep
 # from discord.ui import Button, Select, View
 
 
-data_management = ManageDB("Data")
+data_management  = ManageDB("BotExtensions/EconomyData")
+
+
+def setup(bot):
+    bot.add_cog(Game(bot))
+    print("Economy cog loaded")
+
 
 class Game(commands.Cog):
     def __init__(self, bot):
@@ -17,6 +24,13 @@ class Game(commands.Cog):
         self.allItems = []
         # Every Ban Item
         self.banItem = []
+    def init_db(self):
+        pass
+
+
+    @commands.slash_command()
+    async def create_profile(self, ctx: discord.ApplicationContext):
+        pass
 
 
 class Player:
