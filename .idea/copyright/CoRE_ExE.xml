@@ -1,6 +1,0 @@
-<component name="CopyrightManager">
-  <copyright>
-    <option name="notice" value="Copyright (c) &amp;#36;originalComment.match(&quot;Copyright \(c\) (\d+)&quot;, 1, &quot;-&quot;, &quot;&amp;#36;today.year&quot;)&amp;#36;today.year.&#10;Ceci est une propriété de CoRE.ExE, vous êtes autorisés à l'intégration de ce produit.&#10;Il est formellement interdit de monétiser ce contenu.&#10;Toute infraction aux règles précédemment citée pourra engager des poursuites. " />
-    <option name="myName" value="CoRE.ExE" />
-  </copyright>
-</component>
