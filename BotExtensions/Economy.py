@@ -10,6 +10,13 @@ data_management  = ManageDB("BotExtensions/EconomyData")
 
 def setup(bot):
     bot.add_cog(Game(bot))
+    try :
+        data_management.create_schema("Economy")
+        print("Economy Schema init")
+        data_management.connexion("Economy")
+        data_management.create_table("Player")
+    except AssertionError:
+        data_management.connexion("Economy")
     print("Economy cog loaded")
 
 
@@ -29,13 +36,17 @@ class Game(commands.Cog):
 
 
     @commands.slash_command()
-    async def create_profile(self, ctx: discord.ApplicationContext):
-        pass
-
+    async def create_profile(self, ctx):
+        await ctx.respond(Player.get_player(ctx.author))
 
 class Player:
-    def __int__(self, member: discord.Member):
+    def __int__(self, member: discord.member.Member):
         self.member = member
+
+    @staticmethod
+    def get_player(member: discord.Member):
+        if data_management.connexion("Player"):
+            pass
 
 
 class Item:
