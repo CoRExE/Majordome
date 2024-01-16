@@ -1,0 +1,7 @@
+data = ManageDB('EconomyData')
+data.create_schema("EconomyTest")
+data.connexion("EconomyTest")
+data.create_table("CREATE TABLE Player (name TEXT, money INTEGER, level INTEGER, xp INTEGER)")
+data.create_table("CREATE TABLE Server (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, money INTEGER, nb_member INTEGER)")
+data.save()
+data.simple_insertion("Player", ["name", "money", "level", "xp"], [("test", 100, 1, 0)])

@@ -203,7 +203,7 @@ class ManageDB:
             print("La table n'existe pas ou aucune connexion établie")
             return False
 
-    def selection(self, args: str) -> list | False:
+    def selection(self, args: str) -> list | bool:
         """
         Réalise une vérification de commande sur le premier mot
         Et Affiche tous les résultats de la sélection
@@ -256,6 +256,7 @@ class ManageDB:
             for val in value:
                 args += (str(val) + ", ")
             args = args[:-2] + "), "
+        args = args[:-2] + ";"
         self.insertion(args)
 
     def simple_selection(self, table:str, columns:list | str = "*", conditions:list[str] = None):
