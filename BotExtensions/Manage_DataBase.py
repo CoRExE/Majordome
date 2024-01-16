@@ -211,7 +211,7 @@ class ManageDB:
         :return data <list[tuple]>:
         """
         assert args[0:6] == "SELECT", "Command must be SELECT"
-        if self.check_connexion() and args.split(" ")[3] in self.tables[self.current_schema]:
+        if self.check_connexion() and args.split("FROM")[1][1:] in self.tables[self.current_schema]:
             data = self.cursor.execute(args).fetchall()
             return data
         else:
