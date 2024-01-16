@@ -5,3 +5,4 @@ data.create_table("CREATE TABLE Player (name TEXT, money INTEGER, level INTEGER,
 data.create_table("CREATE TABLE Server (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, money INTEGER, nb_member INTEGER)")
 data.simple_insertion("Player", ["name", "money", "level", "xp"], [("'test'", 100, 1, 0)])
 data.save()
+essai = data.simple_selection("Player")

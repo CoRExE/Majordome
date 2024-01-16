@@ -278,5 +278,4 @@ class ManageDB:
         if conditions is not None:
             for condition in conditions:
                 args += " " + condition
-        args += ";"
         return self.selection(args)
