@@ -31,9 +31,9 @@ class Game(commands.Cog):
         self.allItems = []
         # Every Ban Item
         self.banItem = []
-    def init_db(self):
+    def read_data(self):
+        # TODO
         pass
-
 
     @commands.slash_command()
     async def create_profile(self, ctx):

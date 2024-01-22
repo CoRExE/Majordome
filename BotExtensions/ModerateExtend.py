@@ -176,3 +176,20 @@ class Moderation(commands.Cog):
             view.add_item(button)
 
         message = await ctx.respond(embed=embed, view=view)
+
+    @commands.slash_command()
+    async def citation(self, ctx, member: discord.Member, *, text: str):
+        """
+        Cite les conneries hors contexte d'un membre
+        :param ctx:
+        :param member: Le/la poète·e
+        :param text: La citation
+        :return:
+        """
+        embed = discord.Embed(
+            title="Citation",
+            description=text
+        )
+        embed.set_author(name=member.name, icon_url=member.avatar)
+        embed.set_footer(text="Requested by {}".format(ctx.author.name), icon_url=ctx.author.avatar)
+        await ctx.respond(embed=embed)
