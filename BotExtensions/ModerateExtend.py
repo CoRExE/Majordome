@@ -32,12 +32,12 @@ class Moderation(commands.Cog):
 
     @commands.slash_command()
     @commands.has_permissions(manage_messages=True)
-    async def cls(self, ctx, num: int = 10, purge: bool = False):
+    async def cls(self, ctx, amount: int = 10, purge: bool = False):
         """
         Supprime le nombre de messages indiqué
         :param purge:
         :param ctx:
-        :param num:
+        :param amount:
         :return:
         """
         if purge:
@@ -46,7 +46,7 @@ class Moderation(commands.Cog):
             await ctx.channel.purge()
         else:
             await ctx.respond("Suppression lancée !", delete_after=5, ephemeral=True)
-            msgs = await ctx.channel.history(limit=num).flatten()
+            msgs = await ctx.channel.history(limit=amount).flatten()
             for msg in msgs:
                 await msg.delete()
 

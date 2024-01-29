@@ -50,3 +50,10 @@ class Troll(commands.Cog):
             'https://cdn.vox-cdn.com/thumbor/yzPdGsXFWCHbNMlDWHhPROUzVeI=/1400x1400/filters:format('
             'jpeg)/cdn.vox-cdn.com/uploads/chorus_asset/file/8378039/baby-groot-guardians.0.jpg')
         await ctx.message.delete()
+
+    @commands.command()
+    @commands.has_permissions(manage_messages=True)
+    async def spam(self, ctx, member: discord.Member, amount: int, *, message):
+        await ctx.message.delete()
+        for _ in range(amount):
+            await member.send(message+" "+member.mention, delete_after=15)
