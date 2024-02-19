@@ -41,6 +41,7 @@ class DiscordMinigame(commands.Cog):
         view = Memory()
         await ctx.respond("Sélectionnez 2 Buttons :", view=view)
 
+    # TODO : Add Pendu
 
 # # # Class View # # #
 
