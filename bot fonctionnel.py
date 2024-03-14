@@ -143,5 +143,5 @@ bot.load_extension("BotExtensions.DiscordMinigames")
 bot.load_extension("BotExtensions.PokeExtension")
 bot.load_extension("BotExtensions.troll")
 bot.load_extension("BotExtensions.Economy")
-
+bot.load_extension("BotExtensions.AIExtension")
 bot.run(jeton)
