@@ -218,7 +218,7 @@ class ManageDB:
             print("La table n'existe pas ou aucune connexion établie")
             return False
 
-    def simple_create_table(self, table:str, columns:list[tuple]):
+    def simple_create_table(self, table: str, columns: list[tuple]):
         """
         Créer une table simplement en donnant son nom et ses colonnes
         :param table:
@@ -231,7 +231,16 @@ class ManageDB:
         args = args[:-2] + ");"
         self.create_table(args)
 
-    def simple_delete_table(self, table:str):
+    def simple_create_tables(self, tables: list[str, list[tuple]]):
+        """
+        Créer une table simplement en donnant son nom et ses colonnes
+        :param tables:
+        :return:
+        """
+        for table in tables:
+            self.simple_create_table(table[0], table[1])
+
+    def simple_delete_table(self, table: str):
         """
         Supprime une table simplement en donnant son nom
         :param table:
@@ -239,7 +248,8 @@ class ManageDB:
         """
         args = "DROP TABLE " + table + ";"
         self.delete_table(args)
-    def simple_insertion(self, table:str, columns:list, values:list[tuple]):
+
+    def simple_insertion(self, table: str, columns: list, values: list[tuple]):
         """
         Ajoute des données à une table simplement en donnant son nom, ses colonnes et ses données
         :param table:
@@ -259,7 +269,7 @@ class ManageDB:
         args = args[:-2] + ";"
         self.insertion(args)
 
-    def simple_selection(self, table:str, columns:list | str = "*", conditions:list[str] = None):
+    def simple_selection(self, table: str, columns: list | str = "*", conditions: list[str] = None):
         """
         Affiche les données d'une table simplement en donnant son nom et ses colonnes
         :param table:
