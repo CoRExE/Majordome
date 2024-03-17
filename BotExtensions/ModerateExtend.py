@@ -3,19 +3,35 @@
 #  Il est formellement interdit de monétiser ce contenu.
 #  Toute infraction aux règles précédemment citée pourra engager des poursuites.
 from asyncio import sleep
-
+from Data.Manage_DataBase import ManageDB
 import discord
 from discord.ext import commands
 
 
 def setup(bot):
-    bot.add_cog(Moderation(bot))
+    db = ManageDB(f"/Data")
+    bot.add_cog(Moderation(bot, db))
 
 
 class Moderation(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot, db: ManageDB):
         self.bot = bot
         self.variable_temp: dict = {}
+        self.db = db
+
+    # TODO : Corriger ces methods
+    # def db_init(self):
+    #     self.db.connexion("Moderation")
+    #     if "Notes" not in self.db.show_tables("Moderation"):
+    #         self.db.simple_create_table("Notes", [("ID", "INTEGER PRIMARY KEY AUTOINCREMENT"),
+    #                                               ("Title", "TEXT"),
+    #                                               ("Note", "TEXT"),
+    #                                               ("Owner", "TEXT")]
+    #                                     )
+    #
+    # @commands.Cog.listener()
+    # async def on_ready(self):
+    #     self.db_init()
 
     @commands.slash_command()
     async def avatar(self, ctx, member: discord.Member | None = None):
@@ -79,105 +95,6 @@ class Moderation(commands.Cog):
         await ctx.respond('{0} joined on {0.joined_at}'.format(member))
 
     @commands.slash_command()
-    async def create_poll_fast(self, ctx, question: str, anonymous: bool = False, duration: int = 120):
-        self.variable_temp['participants'] = []
-        buttons = [
-            discord.ui.Button(
-                style=discord.ButtonStyle.green,
-                label="Yes",
-                custom_id="yes"),
-            discord.ui.Button(
-                style=discord.ButtonStyle.red,
-                label="No")
-        ]
-
-        view = discord.ui.View(timeout=duration, disable_on_timeout=True)
-
-        embed = discord.Embed(
-            title="Question",
-            description=question
-        ).set_footer(text="Requested by {}".format(ctx.author.name))
-
-        if anonymous:
-            embed.add_field(
-                name="Participants",
-                value="0"
-            )
-            self.variable_temp['yes'] = 0
-            self.variable_temp['no'] = 0
-        else:
-            embed.add_field(
-                name="Yes",
-                value="",
-                inline=True
-            )
-
-            embed.add_field(
-                name="No",
-                value="",
-                inline=True
-            )
-
-        if anonymous:
-            async def buttons_callback(interaction: discord.Interaction):
-                if interaction.user.name in self.variable_temp['participants']:
-                    await interaction.response.send_message("You already voted!", ephemeral=True)
-                else:
-                    embed.fields[0].value = int(embed.fields[0].value) + 1
-                    self.variable_temp[interaction.custom_id] += 1
-                    await interaction.response.edit_message(embed=embed, view=view)
-                    self.variable_temp['participants'].append(interaction.user.name)
-        else:
-            async def buttons_callback(interaction: discord.Interaction):
-                if interaction.user.name in self.variable_temp['participants']:
-                    await interaction.response.send_message("You already voted!", ephemeral=True)
-                elif interaction.custom_id == "yes":
-                    embed.fields[0].value += interaction.user.name + "\n"
-                    await interaction.response.edit_message(embed=embed, view=view)
-                    self.variable_temp['participants'].append(interaction.user.name)
-                else:
-                    embed.fields[1].value += interaction.user.name + "\n"
-                    await interaction.response.edit_message(embed=embed, view=view)
-                    self.variable_temp['participants'].append(interaction.user.name)
-
-        async def on_timeout():
-            # int in test are broken
-            if self.variable_temp['participants'].__len__() == 0:
-                embed.clear_fields()
-                embed.add_field(
-                    name="Résultat",
-                    value="Aucun Vote"
-                )
-            elif int(embed.fields[0].value) > int(embed.fields[1].value):
-                embed.clear_fields()
-                embed.add_field(
-                    name="Résultat",
-                    value="Yes"
-                )
-            elif int(embed.fields[0].value) < int(embed.fields[1].value):
-                embed.clear_fields()
-                embed.add_field(
-                    name="Résultat",
-                    value="No"
-                )
-            else:
-                embed.clear_fields()
-                embed.add_field(
-                    name="Résultat",
-                    value="Tie"
-                )
-            await message.edit_original_response(embed=embed, view=None)
-            self.variable_temp.clear()
-
-        view.on_timeout = on_timeout
-
-        for button in buttons:
-            button.callback = buttons_callback
-            view.add_item(button)
-
-        message = await ctx.respond(embed=embed, view=view)
-
-    @commands.slash_command()
     async def citation(self, ctx, member: discord.Member, *, text: str):
         """
         Cite les conneries hors contexte d'un membre
@@ -193,3 +110,7 @@ class Moderation(commands.Cog):
         embed.set_author(name=member.name, icon_url=member.avatar)
         embed.set_footer(text="Requested by {}".format(ctx.author.name), icon_url=ctx.author.avatar)
         await ctx.respond(embed=embed)
+
+    @commands.slash_command()
+    async def bloc_notes(self, ctx):
+        pass

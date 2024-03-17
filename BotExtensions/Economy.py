@@ -1,12 +1,10 @@
-import discord
 from discord.ext import commands
-from BotExtensions.Manage_DataBase import *
-from asyncio import sleep
+from Data.Manage_DataBase import *
 
 # from discord.ui import Button, Select, View
 
 
-data_management = ManageDB("BotExtensions/EconomyData")
+data_management = ManageDB("Data/EconomyData")
 
 
 def setup(bot):
