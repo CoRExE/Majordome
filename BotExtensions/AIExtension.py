@@ -24,7 +24,7 @@ def kill_ai(ai: sub.Popen):
     ai.terminate()
 
 class AIExtension(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
         try :
             self.serv_online = requests.get("http://localhost:11434").status_code == 200
@@ -39,14 +39,34 @@ class AIExtension(commands.Cog):
         # await self.bot.change_presence(activity=discord.Activity(name="AI Thinking"))
         await ctx.defer()
         response = requests.post(f"http://localhost:11434/api/generate",
-                                 data=json.dumps({"model": model, "prompt": question}))
-        json_reply = [json.loads(line)["response"] for line in response.iter_lines()]
-        await ctx.respond("".join(json_reply))
+                                 data=json.dumps({"model": model, "prompt": question, "stream": False}))
+        await ctx.respond(json.loads(response.text)["response"])
 
     @ask.error
     async def ask_error(self, ctx, error):
         if isinstance(error, commands.MissingRole):
             await ctx.respond("Tu n'as pas la permission d'utiliser cette commande", ephemeral=True)
+
+
+    @commands.slash_command()
+    @commands.has_any_role("Admin", "Modo")
+    async def ai_setup(self, ctx: discord.ApplicationContext):
+        embed = discord.Embed(title="Paramétrage du serveur", description='Ceci est une commande de paramétrage du serveur', colour=discord.Colour.dark_blue())
+        view = discord.ui.View(timeout=120, disable_on_timeout=True)
+
+        embed.add_field(name="Description", value="Cette commande permet de paramétrer le serveur discord et d'y rajouter la catégorie 'AI'", inline=False)
+        embed.set_footer(text="Péremption de la commande : 2:00")
+
+        view.add_item(discord.ui.Button(label="Créer la catégorie", style=discord.ButtonStyle.blurple, custom_id="create_category"))
+        async def check(interaction: discord.Interaction):
+            if interaction.custom_id == "create_category":
+                await interaction.response.send_message("Création de la catégorie...")
+                # TODO : Create category
+
+        view.interaction_check = check
+
+        await ctx.respond(embed=embed, view=view)
+
 
 
     @commands.slash_command()
