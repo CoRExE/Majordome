@@ -1,2 +1,6 @@
 /BotExtensions/addPack.py
 /Data/EconomyData
+
+# IDE files
+/.idea
+/.vscode
