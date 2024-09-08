@@ -3,10 +3,13 @@
 #  Il est formellement interdit de monétiser ce contenu.
 #  Toute infraction aux règles précédemment citée pourra engager des poursuites.
 import discord
-from discord.ext import commands
+import os
+import tempfile
 import requests
 import json
 import subprocess as sub
+from discord.ext import commands
+from BotExtensions.Utility.image_generation import txt2img
 
 
 def setup(bot):
@@ -84,3 +87,33 @@ class AIExtension(commands.Cog):
             embed.colour = discord.Colour.red()
             view.add_item(discord.ui.Button(label="Turn ON AI", style=discord.ButtonStyle.green, custom_id="launch_ai"))
         await ctx.respond(embed=embed)
+
+
+    # Image generation
+
+    @commands.slash_command()
+    async def simple_img_gen(self, ctx, prompt: str):
+        """
+        Generate an image from a text prompt and send it to the channel.
+        :param ctx:
+        :param prompt:
+        :return:
+        """
+        await ctx.defer()
+        image_data = txt2img(prompt)
+        if image_data is None:
+            await ctx.respond("Une erreur est survenue lors de la génération de l'image.")
+            return
+
+        # Write the image data to a temporary file
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp_file:
+            tmp_file.write(image_data)
+            tmp_file_path = tmp_file.name
+
+        # Send the temporary file
+        await ctx.respond(file=discord.File(tmp_file_path, filename="generated_image.png"))
+
+        # Delete the temporary file
+        print(f"Deleting temporary file {tmp_file_path}")
+        os.remove(tmp_file_path)
+
