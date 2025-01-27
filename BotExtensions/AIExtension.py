@@ -95,6 +95,7 @@ class AIExtension(commands.Cog):
     async def simple_img_gen(self, ctx, prompt: str):
         """
         Generate an image from a text prompt and send it to the channel.
+        TODO : Embed the image in the response and check each 10 seconds the status of the image generation
         :param ctx:
         :param prompt:
         :return:
